@@ -1,25 +1,10 @@
 import { View, Text, TouchableOpacity } from "react-native";
 
 import BookCard from "../components/BookCard";
+import { mockBooks } from "../features/books/data/mockBooks";
 
 export default function HomeScreen({ navigation }) {
-  const books = [
-    {
-      id: "1",
-      title: "Lord of Mysteries",
-      author: "Cuttlefish",
-    },
-    {
-      id: "2",
-      title: "Shadow Slave",
-      author: "Guiltythree",
-    },
-    {
-      id: "3",
-      title: "Reverend Insanity",
-      author: "Gu Zhen Ren",
-    },
-  ];
+  const books = mockBooks;
   return (
     <View>
       {books.map((book) => (
