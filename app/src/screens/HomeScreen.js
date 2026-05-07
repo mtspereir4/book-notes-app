@@ -1,5 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 
+import BookCard from "../components/BookCard";
+
 export default function HomeScreen({ navigation }) {
   const books = [
     {
@@ -21,12 +23,11 @@ export default function HomeScreen({ navigation }) {
   return (
     <View>
       {books.map((book) => (
-        <TouchableOpacity
+        <BookCard
           key={book.id}
+          book={book}
           onPress={() => navigation.navigate("BookDetails", { book })}
-        >
-          <Text>{book.title}</Text>
-        </TouchableOpacity>
+        />
       ))}
     </View>
   );
