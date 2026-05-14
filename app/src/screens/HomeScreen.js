@@ -8,7 +8,7 @@ export default function HomeScreen({ navigation }) {
   const [books, setBooks] = useState([]);
 
   // Carrega os livros da base de dados
-  async function loadBooks() {
+  async function loadAllBooks() {
     try {
       const booksLoaded = await getAllBooks();
 
@@ -21,7 +21,7 @@ export default function HomeScreen({ navigation }) {
   // Atualiza os livros carregados
   useEffect(() => {
     const removeListener = navigation.addListener("focus", () => {
-      loadBooks();
+      loadAllBooks();
     });
 
     return removeListener;
@@ -38,7 +38,9 @@ export default function HomeScreen({ navigation }) {
         <BookCard
           key={book.id}
           book={book}
-          onPress={() => navigation.navigate("BookDetails", { book })}
+          onPress={() =>
+            navigation.navigate("BookDetails", { bookId: book.id })
+          }
         />
       ))}
     </View>

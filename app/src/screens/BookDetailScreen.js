@@ -1,16 +1,45 @@
 import { View, Text, Button, StyleSheet } from "react-native";
-import { deleteBook } from "../features/books/repositories/BookRepository";
+import {
+  deleteBook,
+  getBookById,
+} from "../features/books/repositories/BookRepository";
+import { useEffect, useState } from "react";
 
 export default function BookDetailScreen({ navigation, route }) {
-  const { book } = route.params;
+  const [book, setBook] = useState(null);
+
+  const { bookId } = route.params;
+
+  // Recupera o livro da base de dados a partir do id informado
+  async function loadBook() {
+    try {
+      const loadedBook = await getBookById(bookId);
+      setBook(loadedBook);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   async function handleDeleteBook() {
     try {
-      await deleteBook(book.id);
+      await deleteBook(bookId);
       navigation.goBack();
     } catch (error) {
       console.error(error);
     }
+  }
+
+  useEffect(() => {
+    const removeListener = navigation.addListener("focus", () => {
+      loadBook();
+    });
+
+    return removeListener;
+  }, [navigation]);
+
+  // Trata a primeira montagem do componente onde book = null;
+  if (!book) {
+    return <Text>Carregando...</Text>;
   }
 
   return (
