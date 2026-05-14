@@ -1,25 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View, Text, Button, TouchableOpacity } from "react-native";
 
 import BookCard from "../components/BookCard";
-import { mockBooks } from "../features/books/data/mockBooks";
+import { getAllBooks } from "../features/books/repositories/BookRepository";
 
 export default function HomeScreen({ navigation }) {
-  const [books, setBooks] = useState(mockBooks);
+  const [books, setBooks] = useState([]);
 
-  function handleCreateBook(book) {
-    setBooks([...books, book]);
+  // Carrega os livros da base de dados
+  async function loadBooks() {
+    try {
+      const booksLoaded = await getAllBooks();
+
+      setBooks(booksLoaded);
+    } catch (error) {
+      console.error(error);
+    }
   }
+
+  // Atualiza os livros carregados
+  useEffect(() => {
+    const removeListener = navigation.addListener("focus", () => {
+      loadBooks();
+    });
+
+    return removeListener;
+  }, [navigation]);
 
   return (
     <View>
       <Button
         title="Novo Livro"
-        onPress={() =>
-          navigation.navigate("CreateBook", {
-            onCreateBook: handleCreateBook,
-          })
-        }
+        onPress={() => navigation.navigate("CreateBook")}
       />
 
       {books.map((book) => (

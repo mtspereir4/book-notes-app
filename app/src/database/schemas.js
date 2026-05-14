@@ -11,7 +11,7 @@ export const CREATE_BOOKS_TABLE = `
       length(genre) <= 100
     ),
     reading_status TEXT CHECK(
-      length(status) <= 100
+      length(reading_status) <= 100
     ),
     publication_year INTEGER CHECK(
       publication_year BETWEEN 1500 AND 2100
@@ -24,7 +24,18 @@ export const CREATE_BOOKS_TABLE = `
   );
 `;
 
-// LEMBRETE: CRIAR TRIGGER PARA ATUALIZAR O CAMPO updated_at
+// Trigger para atualizar o campo updated_at automaticamente ao realizar um update na tabela books
+export const CREATE_BOOKS_UPDATED_AT_TRIGGER = `
+  CREATE TRIGGER IF NOT EXISTS update_books_updated_at
+  AFTER UPDATE ON books
+  FOR EACH ROW
+  WHEN NEW.updated_at = OLD.updated_at
+  BEGIN
+    UPDATE books
+    SET updated_at = CURRENT_TIMESTAMP
+    WHERE id = OLD.id;
+  END;
+`;
 
 export const CREATE_NOTES_TABLE = `
   CREATE TABLE IF NOT EXISTS notes (
@@ -43,4 +54,17 @@ export const CREATE_NOTES_TABLE = `
       REFERENCES books(id)
       ON DELETE CASCADE
   );
+`;
+
+// Trigger para atualizar o campo updated_at automaticamente ao realizar um update na tabela notes
+export const CREATE_NOTES_UPDATED_AT_TRIGGER = `
+  CREATE TRIGGER IF NOT EXISTS update_notes_updated_at
+  AFTER UPDATE ON notes
+  FOR EACH ROW
+  WHEN NEW.updated_at = OLD.updated_at
+  BEGIN
+    UPDATE notes
+    SET updated_at = CURRENT_TIMESTAMP
+    WHERE id = OLD.id;
+  END;
 `;
