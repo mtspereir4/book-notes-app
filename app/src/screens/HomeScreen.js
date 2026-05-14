@@ -1,32 +1,45 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { useState, useEffect } from "react";
+import { View, Text, Button, TouchableOpacity } from "react-native";
+
+import BookCard from "../components/BookCard";
+import { getAllBooks } from "../features/books/repositories/BookRepository";
 
 export default function HomeScreen({ navigation }) {
-  const books = [
-    {
-      id: "1",
-      title: "Lord of Mysteries",
-      author: "Cuttlefish",
-    },
-    {
-      id: "2",
-      title: "Shadow Slave",
-      author: "Guiltythree",
-    },
-    {
-      id: "3",
-      title: "Reverend Insanity",
-      author: "Gu Zhen Ren",
-    },
-  ];
+  const [books, setBooks] = useState([]);
+
+  // Carrega os livros da base de dados
+  async function loadBooks() {
+    try {
+      const booksLoaded = await getAllBooks();
+
+      setBooks(booksLoaded);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // Atualiza os livros carregados
+  useEffect(() => {
+    const removeListener = navigation.addListener("focus", () => {
+      loadBooks();
+    });
+
+    return removeListener;
+  }, [navigation]);
+
   return (
     <View>
+      <Button
+        title="Novo Livro"
+        onPress={() => navigation.navigate("CreateBook")}
+      />
+
       {books.map((book) => (
-        <TouchableOpacity
+        <BookCard
           key={book.id}
+          book={book}
           onPress={() => navigation.navigate("BookDetails", { book })}
-        >
-          <Text>{book.title}</Text>
-        </TouchableOpacity>
+        />
       ))}
     </View>
   );
