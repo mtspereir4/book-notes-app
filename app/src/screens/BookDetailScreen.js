@@ -1,12 +1,23 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, Button, StyleSheet } from "react-native";
+import { deleteBook } from "../features/books/repositories/BookRepository";
 
-export default function BookDetailScreen({ route }) {
+export default function BookDetailScreen({ navigation, route }) {
   const { book } = route.params;
+
+  async function handleDeleteBook() {
+    try {
+      await deleteBook(book.id);
+      navigation.goBack();
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <View style={style.container}>
       <Text style={style.title}>Titulo: {book.title}</Text>
       <Text style={style.author}>Autor: {book.author}</Text>
+      <Button title="Remover livro" onPress={handleDeleteBook} />
     </View>
   );
 }

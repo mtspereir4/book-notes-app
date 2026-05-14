@@ -26,3 +26,15 @@ export async function saveBook(book) {
     [book.id, book.title, book.author],
   );
 }
+
+export async function deleteBook(bookId) {
+  const database = await getDatabase();
+
+  return await database.runAsync(
+    `
+    DELETE FROM books
+    WHERE id = ?
+    `,
+    bookId,
+  );
+}
