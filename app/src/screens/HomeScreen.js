@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { View, Text, Button, TouchableOpacity } from "react-native";
+import { View, Button } from "react-native";
 
 import BookCard from "../components/BookCard";
 import { getAllBooks } from "../features/books/repositories/BookRepository";
