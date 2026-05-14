@@ -3,11 +3,13 @@ import { getDatabase } from "../../../database/db";
 export async function getAllBooks() {
   const database = await getDatabase();
 
-  return await database.getAllAsync(`
+  return await database.getAllAsync(
+    `
     SELECT *
     FROM books
     ORDER BY created_at DESC
-  `);
+    `,
+  );
 }
 
 export async function saveBook(book) {
@@ -21,9 +23,9 @@ export async function saveBook(book) {
       author
     )
     
-    VALUES (?,?,?)
-  `,
-    [book.id, book.title, book.author],
+    VALUES ($id,$title,$author)
+    `,
+    { $id: book.id, $title: book.title, $author: book.author },
   );
 }
 
@@ -33,8 +35,23 @@ export async function deleteBook(bookId) {
   return await database.runAsync(
     `
     DELETE FROM books
-    WHERE id = ?
+    WHERE id = $id
     `,
-    bookId,
+    { $id: bookId },
+  );
+}
+
+export async function updateBook(book) {
+  const database = await getDatabase();
+
+  return await database.runAsync(
+    `
+    UPDATE books
+    SET
+      title = $title,
+      author = $author
+    WHERE id = $id
+    `,
+    { $title: book.title, $author: book.author, $id: book.id },
   );
 }

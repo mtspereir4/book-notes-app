@@ -17,6 +17,10 @@ export default function BookDetailScreen({ navigation, route }) {
     <View style={style.container}>
       <Text style={style.title}>Titulo: {book.title}</Text>
       <Text style={style.author}>Autor: {book.author}</Text>
+      <Button
+        title="Editar livro"
+        onPress={() => navigation.navigate("CreateBook", { book })}
+      />
       <Button title="Remover livro" onPress={handleDeleteBook} />
     </View>
   );
