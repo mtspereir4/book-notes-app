@@ -1,27 +1,34 @@
 import { useState } from "react";
 import { View, TextInput, Button, StyleSheet } from "react-native";
 
-import { saveBook } from "../features/books/repositories/BookRepository";
+import {
+  saveBook,
+  updateBook,
+} from "../features/books/repositories/BookRepository";
 
-export default function CreateBooksScreen({ navigation }) {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
+export default function CreateBooksScreen({ navigation, route }) {
+  // Verifica se foi passado parâmetros, caso sim, define estado de edição
+  const existingBook = route.params?.book;
+  const isUpdating = !!existingBook;
+
+  const [title, setTitle] = useState(existingBook?.title || "");
+  const [author, setAuthor] = useState(existingBook?.author || "");
 
   // Função cria um novo livro e chama a função saveBook() para adicionar o livro criado
   async function handleSave() {
-    const newBook = {
-      id: Date.now().toString(),
-      title: title.trim(),
-      author: author.trim(),
-    };
-
     // Valida o conteúdo do campo título não permitindo títulos vazios
     if (!title.trim()) {
       return;
     }
 
+    const bookData = {
+      id: isUpdating ? existingBook.id : Date.now().toString(),
+      title: title.trim(),
+      author: author.trim(),
+    };
+
     try {
-      await saveBook(newBook);
+      isUpdating ? await updateBook(bookData) : await saveBook(bookData);
       navigation.goBack();
     } catch (error) {
       console.error(error);
