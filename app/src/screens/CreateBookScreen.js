@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { View, TextInput, Button, StyleSheet } from "react-native";
 
-export default function CreateBooksScreen({ navigation, route }) {
+import { saveBook } from "../features/books/repositories/BookRepository";
+
+export default function CreateBooksScreen({ navigation }) {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
 
-  const { onCreateBook } = route.params;
-
-  // Função cria um novo livro e chama a função handleCreateBook() para adicionar o livro criado
-  function handleSave() {
+  // Função cria um novo livro e chama a função saveBook() para adicionar o livro criado
+  async function handleSave() {
     const newBook = {
       id: Date.now().toString(),
-      title,
-      author,
+      title: title.trim(),
+      author: author.trim(),
     };
 
     // Valida o conteúdo do campo título não permitindo títulos vazios
@@ -20,9 +20,12 @@ export default function CreateBooksScreen({ navigation, route }) {
       return;
     }
 
-    onCreateBook(newBook);
-
-    navigation.goBack();
+    try {
+      await saveBook(newBook);
+      navigation.goBack();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   return (
