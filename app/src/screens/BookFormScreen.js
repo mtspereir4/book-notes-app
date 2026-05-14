@@ -6,7 +6,7 @@ import {
   updateBook,
 } from "../features/books/repositories/BookRepository";
 
-export default function CreateBooksScreen({ navigation, route }) {
+export default function BookFormScreen({ navigation, route }) {
   // Verifica se foi passado parâmetros, caso sim, define estado de edição
   const existingBook = route.params?.book;
   const isUpdating = !!existingBook;

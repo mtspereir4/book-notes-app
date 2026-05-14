@@ -12,6 +12,19 @@ export async function getAllBooks() {
   );
 }
 
+export async function getBookById(bookId) {
+  const database = await getDatabase();
+
+  return await database.getFirstAsync(
+    `
+    SELECT *
+    FROM books
+    WHERE id = $id
+    `,
+    { $id: bookId },
+  );
+}
+
 export async function saveBook(book) {
   const database = await getDatabase();
 
