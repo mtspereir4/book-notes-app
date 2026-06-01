@@ -1,4 +1,4 @@
-import { getDatabase } from "../../../database/db";
+import { getDatabase } from "../database/db";
 
 export async function getAllBooks() {
   const database = await getDatabase();

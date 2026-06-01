@@ -1,25 +1,27 @@
+// Importando dependências
+import { useCallback, useState } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
-import {
-  deleteBook,
-  getBookById,
-} from "../features/books/repositories/BookRepository";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 
+import { deleteBook, getBookById } from "../repository/BookRepository";
+
+// Função cria o componente BookDetailScreen, tela com informações refentes ao livro selecionado
 export default function BookDetailScreen({ navigation, route }) {
   const [book, setBook] = useState(null);
 
   const { bookId } = route.params;
 
-  // Recupera o livro da base de dados a partir do id informado
-  async function loadBook() {
+  // A seguinte função recupera o livro da base de dados a partir do id informado
+  const loadBook = useCallback(async () => {
     try {
       const loadedBook = await getBookById(bookId);
       setBook(loadedBook);
     } catch (error) {
       console.error(error);
     }
-  }
+  }, [bookId]);
 
+  // A seguinte função chama a função deleteBook para remover o livro da base de dados a partir do id informado e retorna para a tela anterior no stack
   async function handleDeleteBook() {
     try {
       await deleteBook(bookId);
@@ -29,13 +31,12 @@ export default function BookDetailScreen({ navigation, route }) {
     }
   }
 
-  useEffect(() => {
-    const removeListener = navigation.addListener("focus", () => {
+  // O seguinte hook chama a função loadBook sempre que a tela BookDetailScreen estiver em foco
+  useFocusEffect(
+    useCallback(() => {
       loadBook();
-    });
-
-    return removeListener;
-  }, [navigation]);
+    }, [loadBook]),
+  );
 
   // Trata a primeira montagem do componente onde book = null;
   if (!book) {
@@ -48,7 +49,7 @@ export default function BookDetailScreen({ navigation, route }) {
       <Text style={style.author}>Autor: {book.author}</Text>
       <Button
         title="Editar livro"
-        onPress={() => navigation.navigate("CreateBook", { book })}
+        onPress={() => navigation.navigate("BookForm", { book })}
       />
       <Button title="Remover livro" onPress={handleDeleteBook} />
     </View>
@@ -62,7 +63,7 @@ const style = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBotton: 8,
+    marginBottom: 8,
   },
   author: {
     fontSize: 18,
