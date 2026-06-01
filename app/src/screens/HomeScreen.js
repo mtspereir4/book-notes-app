@@ -1,14 +1,17 @@
-import { useState, useEffect } from "react";
+// Importando dependências
+import { useCallback, useState } from "react";
 import { View, Button } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 
 import BookCard from "../components/BookCard";
-import { getAllBooks } from "../features/books/repositories/BookRepository";
+import { getAllBooks } from "../repository/BookRepository";
 
+// Função cria o componente HomeScreen, tela principal do app
 export default function HomeScreen({ navigation }) {
   const [books, setBooks] = useState([]);
 
   // Carrega os livros da base de dados
-  async function loadAllBooks() {
+  const loadAllBooks = useCallback(async () => {
     try {
       const booksLoaded = await getAllBooks();
 
@@ -16,22 +19,20 @@ export default function HomeScreen({ navigation }) {
     } catch (error) {
       console.error(error);
     }
-  }
+  }, []);
 
-  // Atualiza os livros carregados
-  useEffect(() => {
-    const removeListener = navigation.addListener("focus", () => {
+  // Atualiza os livros sempre que a tela volta a ficar em foco
+  useFocusEffect(
+    useCallback(() => {
       loadAllBooks();
-    });
-
-    return removeListener;
-  }, [navigation]);
+    }, [loadAllBooks]),
+  );
 
   return (
     <View>
       <Button
         title="Novo Livro"
-        onPress={() => navigation.navigate("CreateBook")}
+        onPress={() => navigation.navigate("BookForm")}
       />
 
       {books.map((book) => (

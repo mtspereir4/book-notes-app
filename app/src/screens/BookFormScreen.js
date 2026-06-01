@@ -1,10 +1,7 @@
 import { useState } from "react";
 import { View, TextInput, Button, StyleSheet } from "react-native";
 
-import {
-  saveBook,
-  updateBook,
-} from "../features/books/repositories/BookRepository";
+import { saveBook, updateBook } from "../repository/BookRepository";
 
 export default function BookFormScreen({ navigation, route }) {
   // Verifica se foi passado parâmetros, caso sim, define estado de edição
