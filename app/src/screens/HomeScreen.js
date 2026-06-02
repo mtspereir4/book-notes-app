@@ -1,6 +1,6 @@
 // Importando dependências
 import { useCallback, useState } from "react";
-import { View, Button } from "react-native";
+import { Button, FlatList, Text } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
 import BookCard from "../components/BookCard";
@@ -29,21 +29,24 @@ export default function HomeScreen({ navigation }) {
   );
 
   return (
-    <View>
-      <Button
-        title="Novo Livro"
-        onPress={() => navigation.navigate("BookForm")}
-      />
-
-      {books.map((book) => (
+    <FlatList
+      data={books}
+      keyExtractor={(item) => item.id.toString()}
+      ListEmptyComponent={<Text>Nenhum livro cadastrado</Text>}
+      ListHeaderComponent={
+        <Button
+          title="Novo Livro"
+          onPress={() => navigation.navigate("BookForm")}
+        />
+      }
+      renderItem={({ item }) => (
         <BookCard
-          key={book.id}
-          book={book}
+          book={item}
           onPress={() =>
-            navigation.navigate("BookDetails", { bookId: book.id })
+            navigation.navigate("BookDetails", { bookId: item.id })
           }
         />
-      ))}
-    </View>
+      )}
+    />
   );
 }
